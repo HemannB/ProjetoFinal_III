@@ -1,0 +1,189 @@
+/* Container geral */
+.clientes-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafc;
+  box-sizing: border-box;
+  color: #21387b;
+}
+
+/* Título */
+.clientes-container h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #21387b;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* Formulário */
+.clientes-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background-color: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgb(33 56 123 / 0.15);
+  max-width: 480px;
+  margin: 0 auto 3rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.clientes-form:hover {
+  box-shadow: 0 12px 30px rgb(33 56 123 / 0.25);
+}
+
+.clientes-form input {
+  padding: 14px 18px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: inherit;
+  color: #21387b;
+}
+
+.clientes-form input:focus {
+  outline: none;
+  border-color: #21387b;
+  box-shadow: 0 0 10px rgba(33, 56, 123, 0.4);
+}
+
+/* Botão do formulário */
+.clientes-form button {
+  background-color: #21387b;
+  color: white;
+  padding: 0.85rem 0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 16px rgba(33, 56, 123, 0.5);
+}
+
+.clientes-form button:hover {
+  background-color: #ffed00;
+  color: #21387b;
+  font-weight: 700;
+  box-shadow: 0 8px 22px rgba(255, 237, 0, 0.8);
+}
+
+/* Tabela */
+.clientes-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 10px 25px rgb(33 56 123 / 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.clientes-table:hover {
+  box-shadow: 0 14px 35px rgb(33 56 123 / 0.18);
+}
+
+.clientes-table th,
+.clientes-table td {
+  padding: 16px 22px;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: none;
+  vertical-align: middle;
+  color: #21387b;
+  font-weight: 500;
+}
+
+.clientes-table th {
+  background-color: #21387b;
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  user-select: none;
+}
+
+.clientes-table tbody tr {
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.clientes-table tbody tr:hover {
+  background-color: #e6f0ff;
+  box-shadow: 0 6px 18px rgba(33, 56, 123, 0.15);
+}
+
+/* Botões de ação */
+.action-buttons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  padding: 8px;
+  transition: transform 0.2s ease-in-out, color 0.3s ease;
+  color: #21387b;
+}
+
+.edit-btn {
+  color: #21387b;
+}
+
+.edit-btn:hover {
+  transform: scale(1.2);
+  color: #1769aa;
+}
+
+.delete-btn {
+  color: #d32f2f;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+  color: #b71c1c;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .clientes-container {
+    padding: 1.5rem 1rem;
+    max-width: 95%;
+  }
+
+  .clientes-form {
+    width: 100%;
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .clientes-form button {
+    font-size: 1rem;
+    padding: 0.7rem 0;
+  }
+
+  .clientes-table th,
+  .clientes-table td {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .icon-btn {
+    font-size: 1.2rem;
+    padding: 6px;
+  }
+}

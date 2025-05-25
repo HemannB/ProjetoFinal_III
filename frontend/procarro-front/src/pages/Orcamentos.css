@@ -1,0 +1,96 @@
+.orcamentos-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.orcamentos-container h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #21387b;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Formulário */
+.orcamentos-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.orcamentos-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.orcamentos-form input:focus {
+    outline: none;
+    border-color: #21387b;
+    box-shadow: 0px 0px 6px rgba(33, 56, 123, 0.3);
+}
+
+.orcamentos-form button {
+    width: 100%;
+    padding: 12px;
+    background: #21387b;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.orcamentos-form button:hover {
+    background: #1769aa;
+}
+
+/* Tabela de Orçamentos (opcional, caso você tenha uma) */
+.orcamentos-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.orcamentos-table th,
+.orcamentos-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.orcamentos-table th {
+    background: #21387b;
+    color: white;
+    text-transform: uppercase;
+}
+
+.orcamentos-table tr:hover {
+    background: rgba(33, 56, 123, 0.08);
+}
+
+@media (max-width: 768px) {
+    .orcamentos-container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .orcamentos-form button {
+        font-size: 16px;
+        padding: 10px;
+    }
+}

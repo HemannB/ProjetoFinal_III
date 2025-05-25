@@ -1,0 +1,219 @@
+:root {
+  --color-primary: #21387b;
+  --color-primary-light: #1769aa;
+  --color-danger: #d32f2f;
+  --color-danger-dark: #b71c1c;
+  --color-bg: #f9fafc;
+  --color-white: #fff;
+  --color-text: #333;
+  --shadow-light: rgba(33, 56, 123, 0.15);
+  --shadow-medium: rgba(33, 56, 123, 0.4);
+  --shadow-hover: rgba(23, 105, 170, 0.6);
+  --shadow-subtle: rgba(0, 0, 0, 0.07);
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  --spacing-base: 1.2rem;
+  --spacing-lg: 2rem;
+  --radius-base: 6px;
+  --radius-lg: 10px;
+}
+
+.pecas-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) 1.5rem;
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.pecas-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+/* Formulário de Peças */
+.pecas-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-base);
+  background-color: var(--color-white);
+  padding: 1.8rem 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 15px var(--shadow-light);
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  box-sizing: border-box;
+}
+
+.pecas-form input,
+.pecas-form select {
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1.8px solid #ccc;
+  border-radius: var(--radius-base);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: inherit;
+}
+
+.pecas-form input:focus,
+.pecas-form select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(33, 56, 123, 0.35);
+}
+
+/* Estilização aprimorada do select */
+.pecas-form select {
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+.pecas-form button {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 0.75rem 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px var(--shadow-medium);
+}
+
+.pecas-form button:hover {
+  background-color: var(--color-primary-light);
+  box-shadow: 0 6px 20px var(--shadow-hover);
+}
+
+/* Wrapper com scroll horizontal para tabelas largas */
+.pecas-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+/* Tabela de Peças */
+.pecas-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-white);
+  box-shadow: 0 5px 15px rgba(33, 56, 123, 0.1);
+}
+
+.pecas-table th,
+.pecas-table td {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 1rem;
+  vertical-align: middle;
+  border-bottom: none;
+}
+
+.pecas-table th {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pecas-table tbody tr {
+  background-color: #fefefe;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 5px var(--shadow-subtle);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: default;
+}
+
+.pecas-table tbody tr:hover {
+  background-color: #e6f0ff;
+  transform: translateX(2px);
+}
+
+.pecas-table td {
+  color: var(--color-text);
+}
+
+/* Botões de ação na tabela */
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-base);
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.3rem;
+  padding: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.edit-btn {
+  color: var(--color-primary);
+}
+
+.edit-btn:hover {
+  transform: scale(1.15);
+  color: var(--color-primary-light);
+}
+
+.delete-btn {
+  color: var(--color-danger);
+}
+
+.delete-btn:hover {
+  transform: scale(1.15);
+  color: var(--color-danger-dark);
+}
+
+/* Estado vazio da tabela */
+.empty-state {
+  text-align: center;
+  color: #888;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .pecas-container {
+    padding: 1.2rem 1rem;
+    max-width: 95%;
+  }
+
+  .pecas-form {
+    width: 100%;
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .pecas-form button {
+    font-size: 1rem;
+    padding: 0.65rem 0;
+  }
+
+  .pecas-table th,
+  .pecas-table td {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .icon-btn {
+    font-size: 1.1rem;
+    padding: 6px;
+  }
+}

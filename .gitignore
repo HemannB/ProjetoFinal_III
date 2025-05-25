@@ -1,0 +1,42 @@
+# 🌐 React (frontend)
+node_modules/
+build/
+dist/
+.env
+.env.local
+.npm/
+.yarn/
+.cache/
+.vscode/
+.DS_Store
+*.log
+
+# ☕ Spring Boot (backend)
+target/
+*.class
+*.jar
+*.war
+*.iml
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Arquivos de configuração do Maven/Gradle que podem ser ignorados
+.mvn/
+.gradle/
+build/
+
+# Configurações de IDEs (IntelliJ, VSCode, Eclipse etc.)
+*.iws
+*.ipr
+*.idea/
+*.classpath
+*.project
+*.settings/
+.vscode/
+
+# Sistema operacional (Windows, macOS, Linux)
+Thumbs.db
+.DS_Store
+*.swp
