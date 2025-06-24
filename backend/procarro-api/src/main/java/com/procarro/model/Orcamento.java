@@ -22,13 +22,23 @@ public class Orcamento {
     @JoinColumn(name = "cpf_cliente", referencedColumnName = "cpf")
     private Cliente cliente;
 
-    @Column(name = "data_orcamento")
-    private LocalDateTime dataOrcamento = LocalDateTime.now();
+    @Column(name = "data_orcamento", nullable = false)
+    private LocalDateTime dataOrcamento;
 
-    private BigDecimal valorTotal;
+    @Column(name = "valor_total", nullable = false)
+    private BigDecimal valorTotal = BigDecimal.ZERO;
 
     private String observacoes;
 
-    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOrcamento> itens;
+
+    private String status;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.dataOrcamento == null) {
+            this.dataOrcamento = LocalDateTime.now();
+        }
+    }
 }

@@ -16,7 +16,7 @@ const Sidebar = ({ setPage }) => {
       <div className="sidebar-logo">
         <img src={logo} alt="Logo Procarro" />
       </div>
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" aria-label="Navegação principal">
         {menuItems.map(({ key, label, icon }) => (
           <button
             key={key}
@@ -24,10 +24,8 @@ const Sidebar = ({ setPage }) => {
             className="sidebar-btn"
             type="button"
           >
-            <span aria-label={label} role="img" style={{ marginRight: 8 }}>
-              {icon}
-            </span>
-            <span>{label}</span>
+            <span className="sidebar-icon" aria-hidden="true">{icon}</span>
+            <span className="sidebar-label">{label}</span>
           </button>
         ))}
       </nav>

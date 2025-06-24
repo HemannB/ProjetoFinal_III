@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "./Modal.css";
-
 const Modal = ({ isOpen, onClose, children, title }) => {
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -13,9 +12,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [onClose]);
-
     if (!isOpen) return null;
-
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -26,5 +23,4 @@ const Modal = ({ isOpen, onClose, children, title }) => {
         </div>
     );
 };
-
 export default Modal;

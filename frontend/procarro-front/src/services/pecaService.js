@@ -4,10 +4,14 @@ const API_URL = "http://localhost:8080/api/pecas";
 
 const PecaService = {
     listarTodos: async () => {
+    try {
         const response = await axios.get(API_URL);
         return response.data;
-    },
-    
+    } catch (error) {
+        console.error("Erro ao listar peças:", error);
+        throw error;
+    }
+},  
 
     buscarPorId: async (id) => {
         const response = await axios.get(`${API_URL}/${id}`);

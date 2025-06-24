@@ -9,89 +9,93 @@ const Clientes = () => {
     const [clienteSelecionado, setClienteSelecionado] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [termoBusca, setTermoBusca] = useState("");
 
     useEffect(() => {
-        const fetchClientes = async () => {
-            try {
-                const clientesData = await ClienteService.listarTodos();
-                setClientes(clientesData);
-            } catch (error) {
-                console.error("Erro ao carregar clientes:", error);
-            }
-        };
-        fetchClientes();
+        ClienteService.listarTodos().then(setClientes);
     }, []);
 
-    const handleEditCliente = (cliente) => {
-        setClienteSelecionado(cliente);
-        setIsEditing(true);
-        setIsModalOpen(true);
-    };
-
-    const handleAddCliente = async () => {
-        if (!clienteSelecionado?.cpf) return;
-
-        try {
-            const response = await ClienteService.criarCliente(clienteSelecionado);
-            setClientes([...clientes, response]);
-            setIsModalOpen(false);
-            setClienteSelecionado({
+    const abrirModal = (cliente = null) => {
+        setClienteSelecionado(
+            cliente ?? {
                 cpf: "",
                 nome: "",
                 sobrenome: "",
                 telefone: "",
                 email: "",
-                endereco_completo: ""
-            });
-            setIsEditing(false);
-        } catch (error) {
-            console.error("Erro ao adicionar cliente:", error);
-        }
+                endereco_completo: "",
+            }
+        );
+        setIsEditing(!!cliente);
+        setIsModalOpen(true);
     };
 
-    const handleSaveCliente = async () => {
-        if (!clienteSelecionado) return;
+    const fecharModal = () => {
+        setIsModalOpen(false);
+        setClienteSelecionado(null);
+        setIsEditing(false);
+    };
+
+    const handleSalvar = async () => {
+        if (!clienteSelecionado?.cpf) return;
 
         try {
-            await ClienteService.atualizarCliente(clienteSelecionado.cpf, clienteSelecionado);
-            setClientes(clientes.map(c => (c.cpf === clienteSelecionado.cpf ? clienteSelecionado : c)));
-            setIsModalOpen(false);
-            setClienteSelecionado(null);
-            setIsEditing(false);
+            if (isEditing) {
+                await ClienteService.atualizarCliente(
+                    clienteSelecionado.cpf,
+                    clienteSelecionado
+                );
+                setClientes((prev) =>
+                    prev.map((c) =>
+                        c.cpf === clienteSelecionado.cpf
+                            ? clienteSelecionado
+                            : c
+                    )
+                );
+            } else {
+                const novoCliente = await ClienteService.criarCliente(
+                    clienteSelecionado
+                );
+                setClientes((prev) => [...prev, novoCliente]);
+            }
+            fecharModal();
         } catch (error) {
-            console.error("Erro ao atualizar cliente:", error);
+            alert("Erro ao salvar cliente.");
         }
     };
 
-    const handleDeleteCliente = async (cpf) => {
+    const handleExcluir = async (cpf) => {
         try {
             await ClienteService.deletarCliente(cpf);
-            setClientes(clientes.filter(cliente => cliente.cpf !== cpf));
-        } catch (error) {
-            console.error("Erro ao excluir cliente:", error);
+            setClientes((prev) => prev.filter((c) => c.cpf !== cpf));
+        } catch {
+            alert("Erro ao excluir cliente.");
         }
     };
+
+    const clientesFiltrados = clientes.filter((cliente) =>
+        `${cliente.nome} ${cliente.sobrenome} ${cliente.cpf} ${cliente.telefone} ${cliente.email} ${cliente.endereco_completo}`
+            .toLowerCase()
+            .includes(termoBusca.toLowerCase())
+    );
 
     return (
         <div className="clientes-container">
             <h1>Gestão de Clientes</h1>
-            <button
-                className="add-btn"
-                onClick={() => {
-                    setClienteSelecionado({
-                        cpf: "",
-                        nome: "",
-                        sobrenome: "",
-                        telefone: "",
-                        email: "",
-                        endereco_completo: ""
-                    });
-                    setIsEditing(false);
-                    setIsModalOpen(true);
-                }}
-            >
-                ➕ Novo Cliente
+
+            <button className="add-btn" onClick={() => abrirModal()}>
+                Novo Cliente
             </button>
+
+                <input
+                    type="text"
+                    placeholder="Buscar por nome, CPF, telefone, email ou endereço..."
+                    value={termoBusca}
+                    onChange={(e) => setTermoBusca(e.target.value)}
+                    className="search-bar"
+                />
+            
+
             <table className="clientes-table">
                 <thead>
                     <tr>
@@ -104,51 +108,119 @@ const Clientes = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {clientes.map((cliente, index) => (
-                        <tr key={index}>
-                            <td>{cliente.cpf}</td>
-                            <td>{cliente.nome} {cliente.sobrenome}</td>
-                            <td>{cliente.telefone}</td>
-                            <td>{cliente.email}</td>
-                            <td>{cliente.endereco_completo}</td>
-                            <td className="action-buttons">
-                                <button className="icon-btn edit-btn" onClick={() => handleEditCliente(cliente)} title="Editar">
-                                    <FaEdit />
-                                </button>
-                                <button className="icon-btn delete-btn" onClick={() => handleDeleteCliente(cliente.cpf)} title="Excluir">
-                                    <FaTrash />
-                                </button>
+                    {clientesFiltrados.length > 0 ? (
+                        clientesFiltrados.map((cliente) => (
+                            <tr key={cliente.cpf}>
+                                <td>{cliente.cpf}</td>
+                                <td>{cliente.nome} {cliente.sobrenome}</td>
+                                <td>{cliente.telefone}</td>
+                                <td>{cliente.email}</td>
+                                <td>{cliente.endereco_completo}</td>
+                                <td className="action-buttons">
+                                    <button
+                                        className="icon-btn edit-btn"
+                                        onClick={() => abrirModal(cliente)}
+                                        title="Editar"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button
+                                        className="icon-btn delete-btn"
+                                        onClick={() => handleExcluir(cliente.cpf)}
+                                        title="Excluir"
+                                    >
+                                        <FaTrash />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="6" style={{ textAlign: "center" }}>
+                                Nenhum cliente encontrado.
                             </td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
 
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <Modal isOpen={isModalOpen} onClose={fecharModal}>
                 <h2>{isEditing ? "Editar Cliente" : "Novo Cliente"}</h2>
                 {clienteSelecionado && (
                     <div className="modal-form">
-                        <input type="text" placeholder="CPF"
+                        <input
+                            type="text"
+                            placeholder="CPF"
                             value={clienteSelecionado.cpf}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, cpf: e.target.value })}
-                            required />
-                        <input type="text" placeholder="Nome"
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    cpf: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="text"
+                            placeholder="Nome"
                             value={clienteSelecionado.nome}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, nome: e.target.value })} />
-                        <input type="text" placeholder="Sobrenome"
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    nome: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="text"
+                            placeholder="Sobrenome"
                             value={clienteSelecionado.sobrenome}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, sobrenome: e.target.value })} />
-                        <input type="text" placeholder="Telefone"
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    sobrenome: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="text"
+                            placeholder="Telefone"
                             value={clienteSelecionado.telefone}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, telefone: e.target.value })} />
-                        <input type="email" placeholder="Email"
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    telefone: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
                             value={clienteSelecionado.email}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, email: e.target.value })} />
-                        <input type="text" placeholder="Endereço"
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    email: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="text"
+                            placeholder="Endereço"
                             value={clienteSelecionado.endereco_completo}
-                            onChange={e => setClienteSelecionado({ ...clienteSelecionado, endereco_completo: e.target.value })} />
-                        <button onClick={isEditing ? handleSaveCliente : handleAddCliente} disabled={!clienteSelecionado?.cpf}>
-                            {isEditing ? "💾 Salvar Alterações" : "✅ Adicionar Cliente"}
+                            onChange={(e) =>
+                                setClienteSelecionado({
+                                    ...clienteSelecionado,
+                                    endereco_completo: e.target.value,
+                                })
+                            }
+                        />
+                        <button
+                            onClick={handleSalvar}
+                            disabled={!clienteSelecionado.cpf}
+                        >
+                            {isEditing
+                                ? "💾 Salvar Alterações"
+                                : "✅ Adicionar Cliente"}
                         </button>
                     </div>
                 )}

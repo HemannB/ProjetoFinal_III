@@ -14,8 +14,8 @@ public class Estoque {
     @Column(name = "id_estoque")
     private Integer idEstoque;
 
-    @ManyToOne
-    @JoinColumn(name = "cod_peca", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "cod_peca", nullable = false, unique = true)
     private Peca peca;
 
     @Column(nullable = false)

@@ -8,7 +8,6 @@ import Estoque from "./pages/Estoque";
 import Pecas from "./pages/Pecas";
 import "./styles/global.css";
 import "./styles/transition.css";
-
 const pages = {
   dashboard: Dashboard,
   clientes: Clientes,
@@ -16,13 +15,10 @@ const pages = {
   estoque: Estoque,
   pecas: Pecas,
 };
-
 const App = () => {
   const [page, setPage] = useState("dashboard");
-  const nodeRef = useRef(null); // ref para o CSSTransition
-
+  const nodeRef = useRef(null); 
   const CurrentPage = pages[page];
-
   return (
     <div className="app-container">
       <Sidebar setPage={setPage} />
@@ -32,7 +28,7 @@ const App = () => {
             key={page}
             timeout={400}
             classNames="fade"
-            nodeRef={nodeRef} // <-- usa a ref aqui
+            nodeRef={nodeRef} 
           >
             <div className="page-wrapper" ref={nodeRef}>
               <CurrentPage />
@@ -43,5 +39,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;

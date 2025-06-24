@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,9 +42,20 @@ public class EstoqueService {
         Peca peca = pecaRepository.findById(dto.getCodPeca())
                 .orElseThrow(() -> new EntityNotFoundException("Peça com código " + dto.getCodPeca() + " não encontrada."));
 
-        Estoque estoque = new Estoque();
-        estoque.setPeca(peca);
-        estoque.setQuantidade(dto.getQuantidade());
+        // DEBUG opcional
+        System.out.println("Buscando estoque para peça: " + peca.getCodPeca());
+
+        Optional<Estoque> estoqueExistente = estoqueRepository.findByPeca(peca);
+
+        Estoque estoque;
+        if (estoqueExistente.isPresent()) {
+            estoque = estoqueExistente.get();
+            estoque.setQuantidade(estoque.getQuantidade() + dto.getQuantidade());
+        } else {
+            estoque = new Estoque();
+            estoque.setPeca(peca);
+            estoque.setQuantidade(dto.getQuantidade());
+        }
 
         return toDTO(estoqueRepository.save(estoque));
     }

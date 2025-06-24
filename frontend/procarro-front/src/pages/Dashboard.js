@@ -7,40 +7,63 @@ import {
   ArcElement,
   Tooltip,
   Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import "./Dashboard.css";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const Dashboard = () => {
-  const [clientesCount, setClientesCount] = useState(0);
-  const [orcamentosRecentes, setOrcamentosRecentes] = useState([]);
-  const [pecasCount, setPecasCount] = useState(0);
+  const [dashboardData, setDashboardData] = useState({
+    clientesCount: 0,
+    pecasCount: 0,
+    orcamentosRecentes: [],
+    totalOrcamentos: 0,
+    valorTotalMes: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clientes = await ClienteService.listarTodos();
-        const orcamentos = await OrcamentoService.listarTodos();
-        const pecas = await PecaService.listarTodas();
+        const [clientes, orcamentos, pecas] = await Promise.all([
+          ClienteService.listarTodos(),
+          OrcamentoService.listarOrcamentos(),
+          PecaService.listarTodos(),
+        ]);
 
-        setClientesCount(clientes.length);
-        setOrcamentosRecentes(orcamentos.slice(-5));
-        setPecasCount(pecas.length);
+        const hoje = new Date();
+        const orcamentosMes = orcamentos.filter(orc =>
+          new Date(orc.dataOrcamento).getMonth() === hoje.getMonth()
+        );
+
+        setDashboardData({
+          clientesCount: clientes.length,
+          pecasCount: pecas.length,
+          orcamentosRecentes: orcamentos.slice(-5).reverse(),
+          totalOrcamentos: orcamentos.length,
+          valorTotalMes: orcamentosMes.reduce((total, orc) => total + orc.valorTotal, 0),
+        });
       } catch (error) {
         console.error("Erro ao carregar dados do Dashboard:", error);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
-  const chartData = {
+  const donutChartData = {
     labels: ["Clientes", "Orçamentos", "Peças"],
     datasets: [
       {
         label: "Quantidade",
-        data: [clientesCount, orcamentosRecentes.length, pecasCount],
+        data: [dashboardData.clientesCount, dashboardData.totalOrcamentos, dashboardData.pecasCount],
         backgroundColor: ["#21387b", "#ffed00", "#fbc02d"],
         hoverOffset: 30,
         borderWidth: 2,
@@ -49,60 +72,116 @@ const Dashboard = () => {
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-        labels: {
-          font: { size: 14, weight: "600" },
-          color: "#21387b",
-          padding: 20,
-        },
-      },
-      tooltip: {
-        enabled: true,
-        backgroundColor: "#21387b",
-        titleColor: "#ffed00",
-        bodyColor: "#fff",
-        padding: 10,
-        cornerRadius: 6,
-      },
-    },
-  };
+  if (loading) return <div className="loading">Carregando dados...</div>;
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">📊 Painel da Procarro</h1>
-      <p className="dashboard-subtitle">
-        Acompanhe os principais indicadores da loja.
-      </p>
-
-      <div className="cards-container">
-        <div className="card card-highlight">
-          <h2>👥 Clientes</h2>
-          <span>{clientesCount}</span>
-        </div>
-        <div className="card card-highlight">
-          <h2>📄 Últimos Orçamentos</h2>
-          <ul>
-            {orcamentosRecentes.map((orc, index) => (
-              <li key={index}>
-                <strong>{orc.cpf_cliente}</strong> – R$ {orc.valor_total.toFixed(2)}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="card card-highlight">
-          <h2>🔩 Peças</h2>
-          <span>{pecasCount}</span>
-        </div>
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">📊 Painel de Gestão</h1>
+        <p className="dashboard-subtitle">Visão geral da operação</p>
       </div>
 
-      <div className="chart-card">
-        <h2>📈 Visão Geral</h2>
-        <div className="chart-wrapper">
-          <Doughnut data={chartData} options={chartOptions} />
+      <div className="dashboard-grid">
+        {/* Cards de Métricas */}
+        <div className="metrics-container">
+          <div className="metric-card">
+            <div className="metric-header">
+              <div className="metric-icon">👥</div>
+              <h3 className="metric-title">Clientes</h3>
+            </div>
+            <p className="metric-value">{dashboardData.clientesCount}</p>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-header">
+              <div className="metric-icon">📄</div>
+              <h3 className="metric-title">Orçamentos</h3>
+            </div>
+            <p className="metric-value">{dashboardData.totalOrcamentos}</p>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-header">
+              <div className="metric-icon">💰</div>
+              <h3 className="metric-title">Valor (Mês)</h3>
+            </div>
+            <p className="metric-value money">
+              {dashboardData.valorTotalMes.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </p>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-header">
+              <div className="metric-icon">🔩</div>
+              <h3 className="metric-title">Peças</h3>
+            </div>
+            <p className="metric-value">{dashboardData.pecasCount}</p>
+          </div>
+        </div>
+
+        {/* Gráfico */}
+        <div className="chart-row">
+          <div className="chart-container">
+            <div className="chart-header">
+              <h3 className="chart-title">📊 Distribuição de Cadastros</h3>
+            </div>
+            <div className="chart-wrapper">
+              <Doughnut
+                data={donutChartData}
+                options={{
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "right",
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Tabela de Últimos Orçamentos */}
+        <div className="recent-container">
+          <div className="recent-header">
+            <h3 className="recent-title">🆕 Últimos Orçamentos</h3>
+          </div>
+          <div className="table-container">
+            <table className="orders-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dashboardData.orcamentosRecentes.map(orc => (
+                  <tr key={orc.idOrcamento}>
+                    <td>{orc.idOrcamento}</td>
+                    <td className="truncate">{orc.nomeCliente || orc.cpfCliente}</td>
+                    <td>
+                      {orc.valorTotal.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td>
+                      <span className={`status-badge status-${orc.status.toLowerCase()}`}>
+                        {orc.status}
+                      </span>
+                    </td>
+                    <td>{new Date(orc.dataOrcamento).toLocaleDateString("pt-BR")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -18,4 +18,5 @@ public class OrcamentoDTO {
     private BigDecimal valorTotal;
     private String observacoes;
     private List<ItemOrcamentoDTO> itens;
+    private String status;
 }
